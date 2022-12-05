@@ -4,9 +4,9 @@ import numpy as np
 
 t=[1, 2, 4, 8, 16, 32, 64]
 n=len(t)
-data1=pd.read_csv("perf_philo.csv", sep=';')
-data2=pd.read_csv("perf_wr_read.csv", sep=';')
-data3=pd.read_csv("perf_prod_cons.csv", sep=';')
+data1=pd.read_csv("../csv/perf_philo.csv", sep=';')
+data2=pd.read_csv("../csv/perf_wr_read.csv", sep=';')
+data3=pd.read_csv("../csv/perf_prod_cons.csv", sep=';')
 
 def graph(d, title, xlab, ylab, mean):
     plt.title(title)
@@ -17,7 +17,9 @@ def graph(d, title, xlab, ylab, mean):
     plt.xticks([1,2,3,4,5,6,7],t)
     plt.scatter(y, mean, label='Mean')
     plt.plot()
-    plt.show()
+    ttl=title+'.png'
+    plt.savefig(ttl)
+    plt.close()
 
 arr1=np.zeros((n,5))
 arr2=np.zeros((n,5))
@@ -44,5 +46,5 @@ while(i < n):
     j = 0
 
 graph(arr1.transpose(),"Performance of Philosophers", "Number of threads", "Time elapsed [s]", mean1)
-graph(arr2.transpose(),"Performance of Producers Consumers", "Number of threads", "Time elapsed [s]", mean2)
-graph(arr3.transpose(),"Performance of writer reader", "Number of threads", "Time elapsed [s]", mean3)
+graph(arr2.transpose(),"Performance of writer reader", "Number of threads", "Time elapsed [s]", mean2)
+graph(arr3.transpose(),"Performance of Producers Consumers", "Number of threads", "Time elapsed [s]", mean3)

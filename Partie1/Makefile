@@ -9,7 +9,3 @@ fec_prod_cons:
 	@$(CC) utils/prod_cons.c -o fec_prod_cons $(CFLAGS) $(LIBS)
 fec_wr_read:
 	@$(CC) utils/writer_readers.c -o fec_wr_read $(CFLAGS) $(LIBS)
-
-
-	
-
