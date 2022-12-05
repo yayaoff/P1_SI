@@ -98,31 +98,49 @@ int main(int argc, char const *argv[])
     {
         if(pthread_create(&read[i], NULL, (void *)reader, NULL) != 0){
             printf("Error while creating read Thread ");
+            pthread_mutex_destroy(&mutex_readcount);
+            pthread_mutex_destroy(&mutex_writecount);
+            sem_destroy(&wsem);
+            sem_destroy(&rsem);
+            return 1;
         }
     }
     for (int i = 0; i < w; i++)
     {
         if(pthread_create(&write[i], NULL, (void *)writer, NULL) != 0){
             printf("Error while creating writer Thread ");
+            pthread_mutex_destroy(&mutex_readcount);
+            pthread_mutex_destroy(&mutex_writecount);
+            sem_destroy(&wsem);
+            sem_destroy(&rsem);
+            return 1;
         }
     }
-
     for (int i = 0; i < r; i++)
     {
         if(pthread_join(read[i], NULL) != 0){
             printf("Error while joining read threads ");
+            pthread_mutex_destroy(&mutex_readcount);
+            pthread_mutex_destroy(&mutex_writecount);
+            sem_destroy(&wsem);
+            sem_destroy(&rsem);
+            return 1;
         }
     }
     for (int i = 0; i < w; i++)
     {
         if(pthread_join(write[i], NULL) != 0){
             printf("Error while joining write threads ");
+            pthread_mutex_destroy(&mutex_readcount);
+            pthread_mutex_destroy(&mutex_writecount);
+            sem_destroy(&wsem);
+            sem_destroy(&rsem);
+            return 1;
         }
     }
     
     pthread_mutex_destroy(&mutex_readcount);
     pthread_mutex_destroy(&mutex_writecount);
-
     sem_destroy(&wsem);
     sem_destroy(&rsem);
 

@@ -1,31 +1,55 @@
-int target=1; // Shared variable : either 1 or 0
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <unistd.h>
 
-// If locked, it waits until it becomes free
-// If not, it takes the lock and executes the critical session
+int lockThread = 0;
+
+void lock(){
+    asm(
+        "enter:"
+        "movl $1, %%eax;"
+        "xchgl %%eax, %0;"
+        "testl %%eax, %%eax;"
+        "jnz enter; "
+        :"=r" (lockThread)
+        :
+        :"eax"
+        );
+    printf("%d",lockThread);
+};
 
 void unlock(){
-    target=0;
-}
+    asm(
+        "movl $0, %0 ;"
+        :"=r" (lockThread)
+        :
+        :"eax"
+        );
+    printf("%d",lockThread);
+    }
 
-int lock(){
-    if(target==0) target=1;
-    else{
-        while(target==1) {
-            //wait()
-        }
+void sectionCritique(int N){
+    for (int i = 0; i < 6400/N; i++)
+    {
+        while(lockThread == 1){}
+    lock();
+    for (int i = 0; i < 10000; i++){}
+    unlock();
     }
 }
 
-int test_and_test(int* target){
-    int r = *target;
-    *target = 0;
-    return 0;   // Atomic operation
-}
 
-int main(){
-    while(test_and_test(&lock)){}
-    // Critical session
-    
-    target=1;
-    
+int main(int argc, char const *argv[])
+{
+    int N = atoi(argv[1]);
+    pthread_t Threads[N];
+    for (int i = 0; i < N; i++)
+    {
+        if(pthread_create(&Threads[i], NULL, (void*) sectionCritique, NULL) != 0){
+            printf("error");
+        }
+    }
+    return 0;
 }

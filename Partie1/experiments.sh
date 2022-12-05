@@ -1,6 +1,5 @@
 #!/usr/bin/bash
 
-mkdir csv
 touch csv/perf_philo.csv
 touch csv/perf_prod_cons.csv
 touch csv/perf_wr_read.csv
@@ -16,20 +15,16 @@ do
     for j in 1 2 3 4 5
     do
     
-    $(/usr/bin/time -f %e -o f.txt ./fec_philo $i)
+    $(/usr/bin/time -f %e -o f.txt ./fec_philo.out $i)
     echo "$i; $j; $(cat f.txt) " &>> csv/perf_philo.csv
     
-    $(/usr/bin/time -f %e -o f.txt ./fec_wr_read $i $i)
+    $(/usr/bin/time -f %e -o f.txt ./fec_wr_read.out $i $i)
     echo "$i; $j; $(cat f.txt) " &>> csv/perf_wr_read.csv
 
-    $(/usr/bin/time -f %e -o f.txt ./fec_prod_cons $i $i)
+    $(/usr/bin/time -f %e -o f.txt ./fec_prod_cons.out $i $i)
     echo "$i; $j; $(cat f.txt) " &>> csv/perf_prod_cons.csv
-    
     done
-
 done
 
-rm -f fec_philo
-rm -f fec_wr_read
-rm -f fec_prod_cons
+rm -f *.out
 rm -f f.txt

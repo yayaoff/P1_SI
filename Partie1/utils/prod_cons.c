@@ -53,6 +53,10 @@ void consumer(void){
 int main(int argc, char const *argv[]){
 
     buffer=malloc(N*sizeof(int));
+    if (buffer == NULL){
+        printf("Error 1");
+        return 1;
+    };
     int cons = atoi(argv[2]);
     int prod = atoi(argv[1]);
     pthread_t pro[cons],con[prod];
@@ -60,18 +64,47 @@ int main(int argc, char const *argv[]){
     sem_init(&empty,0,N);
     sem_init(&full,0,0);
     for(int i = 0; i < prod; i++) {
-        pthread_create(&pro[i], NULL, (void *)producer, NULL);
+        if (pthread_create(&pro[i], NULL, (void *)producer, NULL) != 0){
+            printf("Error 2");
+            pthread_mutex_destroy(&mutex);
+            free(buffer);
+            sem_destroy(&empty);
+            sem_destroy(&full);
+            return 1;
+        }
     }
     for(int i = 0; i < cons; i++) {
-         pthread_create(&con[i], NULL, (void *)consumer, NULL);
+        if (pthread_create(&con[i], NULL, (void *)consumer, NULL) != 0){
+            printf("Error 3");
+            pthread_mutex_destroy(&mutex);
+            free(buffer);
+            sem_destroy(&empty);
+            sem_destroy(&full);
+            return 1;
+        };
     }
     for(int i = 0; i < prod; i++) {
-        pthread_join(pro[i], NULL);
+        if (pthread_join(pro[i], NULL) != 0){
+            printf("Error 4");
+            pthread_mutex_destroy(&mutex);
+            free(buffer);
+            sem_destroy(&empty);
+            sem_destroy(&full);
+            return 1;
+        };
     }
     for(int i = 0; i < cons; i++) {
-        pthread_join(con[i], NULL);
+        if (pthread_join(con[i], NULL) != 0){
+            printf("Error 5");
+            pthread_mutex_destroy(&mutex);
+            free(buffer);
+            sem_destroy(&empty);
+            sem_destroy(&full);
+            return 1;
+        };
     }
     pthread_mutex_destroy(&mutex);
+    free(buffer);
     sem_destroy(&empty);
     sem_destroy(&full);
     return 0;
