@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-data = pd.read_csv("p.csv", sep=";")
+data1 = pd.read_csv("perf_test_and_set.csv", sep=";")
+data2 = pd.read_csv("perf_test_and_test_and_set.csv", sep=";")
 
 def graph(d, title, xlab, ylab):
     plt.title(title)
@@ -11,11 +12,13 @@ def graph(d, title, xlab, ylab):
     plt.ylabel(ylab)
     plt.show()
 
-n=len(data[" Time elapsed [s]"]) // 5
-arr = np.zeros((n,5))
+n=len(data1[" Time elapsed [s]"]) // 5
+arr1 = np.zeros((n,5))
+arr2 = np.zeros((n,5))
 for i in range(n):
     for j in range(5):
-        arr[i][j] = data[" Time elapsed [s]"][i*5 + j]
+        arr1[i][j] = data1[" Time elapsed [s]"][i*5 + j]
+        arr2[i][j] = data2[" Time elapsed [s]"][i*5 + j]
 
-print(arr)
-graph(arr.transpose(), "Graph de performance assembleur inline ", "Number of threads", 'Time elapsed [s]')
+graph(arr1.transpose(), "Graph de performance test and set ", "Number of threads", 'Time elapsed [s]')
+graph(arr2.transpose(), "Graph de performance test and test and set ", "Number of threads", 'Time elapsed [s]')
