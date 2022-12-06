@@ -1,5 +1,6 @@
 // Probleme des N hihi
 
+#include "sema.c"
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,7 +9,7 @@
 
 int N;
 pthread_t *phil;
-pthread_mutex_t *baguette;
+int* baguette;
 
 void mange(int id) {};
 
@@ -23,16 +24,16 @@ void philosophe (void* arg)
   for (int j = 0; j < 100000; j++) {
     // philosophe pense
     if(left<right) {
-      pthread_mutex_lock(&baguette[left]);
-      pthread_mutex_lock(&baguette[right]);
+      lock(baguette[left]);
+      lock(baguette[right]);
     }
     else {
-      pthread_mutex_lock(&baguette[right]);
-      pthread_mutex_lock(&baguette[left]);
+      unlock(baguette[right]);
+      unlock(baguette[left]);
     }
     mange(*idl);
-    pthread_mutex_unlock(&baguette[left]);
-    pthread_mutex_unlock(&baguette[right]);
+    unlock(baguette[left]);
+    unlock(baguette[right]);
     penser(*idl);
   }
 }
@@ -43,7 +44,7 @@ int main ( int argc, char *argv[])
     long i;
     int id[N];
     int M = (N==1) ? N+1 : N;
-    baguette = (pthread_mutex_t *) malloc(M * sizeof(pthread_mutex_t));
+    baguette = (int*)malloc(M * sizeof(int));
     if (!baguette){
       printf("Error");
       return 1;
@@ -59,12 +60,7 @@ int main ( int argc, char *argv[])
     }
 
     for (i = 0; i < M; i++){
-      if (pthread_mutex_init( &baguette[i], NULL) != 0){
-        printf("Error");
-        free(baguette);
-        free(phil);
-        return 1;
-      };
+      baguette[i]=0;
     }
 
     for (i = 0; i < N; i++){
@@ -78,16 +74,6 @@ int main ( int argc, char *argv[])
 
     for (i = 0; i < N; i++){
       if(pthread_join(phil[i], NULL)!= 0){
-        printf("Error");
-        free(baguette);
-        free(phil);
-        return 1;
-      };
-    }
-
-    for (int i = 0; i < M; i++)
-    {
-      if(pthread_mutex_destroy(&baguette[i]) != 0){
         printf("Error");
         free(baguette);
         free(phil);
