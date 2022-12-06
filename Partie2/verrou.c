@@ -31,8 +31,12 @@ void unlock(){
     }
 
 void test_and_set(void){
+    while(lockThread == 1){}
     lock();
-    for (int i = 0; i < 10000; i++){}
+    for (int i = 0; i < 6400/N; i++)
+    {
+        for (int i = 0; i < 10000; i++){}      
+    }
     unlock();
 }
 
