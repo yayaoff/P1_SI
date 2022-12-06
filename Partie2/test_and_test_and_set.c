@@ -8,7 +8,6 @@ int lockThread = 0;
 int N;
 
 void lock(){
-    while(lockThread){}
     asm(
         "enter:"
         "movl $1, %%eax;"      // %eax=1
@@ -29,18 +28,18 @@ void unlock(){
         :
         :"eax"                  // Return 0
         );
-    }
+}
 
-void test_and_set(void){
+void test_and_test_and_set(void){
     int var = 6400/N;
     for (int i = 0; i < var; i++)
     {
+        while(lockThread==1){}
         lock();
         for (int i = 0; i < 10000; i++){}  
         unlock();    
     }
 }
-
 
 int main(int argc, char const *argv[])
 {
@@ -48,7 +47,7 @@ int main(int argc, char const *argv[])
     pthread_t Threads[N];
     for (int i = 0; i < N; i++)
     {
-        if(pthread_create(&Threads[i], NULL, (void*)&test_and_set, NULL) != 0){
+        if(pthread_create(&Threads[i], NULL, (void*)&test_and_test_and_set, NULL) != 0){
             printf("error");
             return 1;
         }
