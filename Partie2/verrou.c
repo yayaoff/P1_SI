@@ -10,10 +10,11 @@ int N;
 void lock(){
     asm(
         "enter:"
-        "movl $1, %%eax;"
-        "xchgl %%eax, %0;"
-        "testl %%eax, %%eax;"
-        "jnz enter; "
+        "movl $1, %%eax;"      // %eax=1
+        "xchgl %%eax, %0;"     // Exchange %eax and lock : lock=1
+                               // and %eax either 0(lock was free) or 1(lock wasn't free!-->loop!!)
+        "testl %%eax, %%eax;"  // If %eax=0, puts the flag ZF at "true"
+        "jnz enter; "          // If ZF is false, back to the start
         :"=r" (lockThread)
         :
         :"eax"
@@ -22,10 +23,10 @@ void lock(){
 
 void unlock(){
     asm(
-        "movl $0, %0 ;"
-        :"=r" (lockThread)
+        "movl $0, %0 ;"         // %eax=0
+        :"=r" (lockThread)      // lock=0
         :
-        :"eax"
+        :"eax"                  // Return 0
         );
     }
 
