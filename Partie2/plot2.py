@@ -12,7 +12,9 @@ def graph(d, title, xlab, ylab):
     plt.xlabel(xlab)
     plt.ylabel(ylab)
     plt.xticks([1,2,3,4,5,6,7],t)
-    plt.show()
+    ttl=title+'.png'
+    plt.savefig(ttl)
+    plt.close()
 
 n=len(data1[" Time elapsed [s]"]) // 5
 arr1 = np.zeros((n,5))
