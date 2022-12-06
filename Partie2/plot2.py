@@ -18,4 +18,4 @@ for i in range(n):
         arr[i][j] = data[" Time elapsed [s]"][i*5 + j]
 
 print(arr)
-graph(arr.transpose(), "ok", "x", 'Y')
+graph(arr.transpose(), "Graph de performance assembleur inline ", "Number of threads", 'Time elapsed [s]')

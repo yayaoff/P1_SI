@@ -29,8 +29,7 @@ void unlock(){
         );
     }
 
-void sectionCritique(void){
-    while(lockThread == 1){}
+void test_and_set(void){
     lock();
     for (int i = 0; i < 10000; i++){}
     unlock();
@@ -43,7 +42,7 @@ int main(int argc, char const *argv[])
     pthread_t Threads[N];
     for (int i = 0; i < N; i++)
     {
-        if(pthread_create(&Threads[i], NULL, (void*)&sectionCritique, NULL) != 0){
+        if(pthread_create(&Threads[i], NULL, (void*)&test_and_set, NULL) != 0){
             printf("error");
             return 1;
         }
