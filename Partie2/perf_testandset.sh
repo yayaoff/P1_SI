@@ -8,7 +8,7 @@ echo "Number of threads; Measure; Time elapsed [s]" >> perf_test_and_test_and_se
 gcc test_and_set.c -o verrou.out
 gcc test_and_test_and_set.c -o verrou1.out
 
-for i in $(seq 1 $1)
+for i in 1 2 4 8 16 32 64
 do
     for j in 1 2 3 4 5
         do
