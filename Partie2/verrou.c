@@ -15,7 +15,7 @@ void lock(){
                                // and %eax either 0(lock was free) or 1(lock wasn't free!-->loop!!)
         "testl %%eax, %%eax;"  // If %eax=0, puts the flag ZF at "true"
         "jnz enter; "          // If ZF is false, back to the start
-        :"=r" (lockThread)
+        :"=m" (lockThread)
         :
         :"eax"
         );
@@ -24,19 +24,20 @@ void lock(){
 void unlock(){
     asm(
         "movl $0, %0 ;"         // %eax=0
-        :"=r" (lockThread)      // lock=0
+        :"=m" (lockThread)      // lock=0
         :
         :"eax"                  // Return 0
         );
     }
 
 void test_and_set(void){
-    lock();
-    for (int i = 0; i < 6400/N; i++)
+    int var = 6400/N;
+    for (int i = 0; i < var; i++)
     {
-        for (int i = 0; i < 10000; i++){}      
+        lock();
+        for (int i = 0; i < 10000; i++){}  
+        unlock();    
     }
-    unlock();
 }
 
 
@@ -61,3 +62,4 @@ int main(int argc, char const *argv[])
     
     return 0;
 }
+
